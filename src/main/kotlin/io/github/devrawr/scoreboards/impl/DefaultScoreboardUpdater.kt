@@ -43,13 +43,17 @@ object DefaultScoreboardUpdater : ScoreboardUpdater
 
     private fun Player.retrieveScoreboard(): org.bukkit.scoreboard.Scoreboard
     {
-        return if (this.scoreboard == scoreboardManager.mainScoreboard)
+        val scoreboard = if (this.scoreboard == scoreboardManager.mainScoreboard)
         {
             scoreboardManager.newScoreboard
         } else
         {
             this.scoreboard
         }
+
+        this.scoreboard = scoreboard
+
+        return scoreboard
     }
 
     private fun splitText(text: String): Array<String>
