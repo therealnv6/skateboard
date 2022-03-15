@@ -19,14 +19,15 @@ class ScoreboardContext(val player: Player)
      * @param index the index where the line will be displayed
      * @param line  the line to display at the slot
      */
-    fun add(index: Int, line: String)
+    fun add(index: Int, line: String): ScoreboardEntry
     {
-        this.displayAt(
-            index,
-            ScoreboardEntry(
-                this.player, line, this, index,
+        return ScoreboardEntry(
+            this.player, line, this, index,
+        ).also {
+            this.displayAt(
+                index, it
             )
-        )
+        }
     }
 
     /**
@@ -36,14 +37,15 @@ class ScoreboardContext(val player: Player)
      * @param delay the delay between the periodical updates
      * @param line  the body to invoke everytime to get the string from
      */
-    fun add(index: Int, delay: Long = 20L, line: () -> String)
+    fun add(index: Int, delay: Long = 20L, line: () -> String): TickingScoreboardEntry
     {
-        this.displayAt(
-            index,
-            TickingScoreboardEntry(
-                this.player, line.invoke(), index, delay, this, line
+        return TickingScoreboardEntry(
+            this.player, line.invoke(), index, delay, this, line
+        ).also {
+            this.displayAt(
+                index, it,
             )
-        )
+        }
     }
 
     /**
@@ -55,14 +57,15 @@ class ScoreboardContext(val player: Player)
     inline fun <reified T : Event> add(
         index: Int,
         noinline line: (T) -> String
-    )
+    ): ListenerScoreboardEntry<T>
     {
-        this.displayAt(
-            index,
-            ListenerScoreboardEntry(
-                this.player, "", index, T::class.java, this, line
+        return ListenerScoreboardEntry(
+            this.player, "", index, T::class.java, this, line
+        ).also {
+            this.displayAt(
+                index, it
             )
-        )
+        }
     }
 
     fun displayAt(index: Int, entry: ScoreboardEntry)
@@ -101,6 +104,13 @@ class ScoreboardContext(val player: Player)
     {
         Scoreboards.updater.updateLine(
             this.player, index, line
+        )
+    }
+
+    fun removeAt(index: Int)
+    {
+        Scoreboards.updater.removeLine(
+            this.player, index
         )
     }
 }

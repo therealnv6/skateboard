@@ -24,7 +24,7 @@ object DefaultScoreboardUpdater : ScoreboardUpdater
             }
         }
 
-        val identifier = ChatColor.values()[line].toString() + ChatColor.WHITE;
+        val identifier = this.getIdentifier(line)
         val team = scoreboard.getTeam(identifier)
             ?: scoreboard.registerNewTeam(identifier)
 
@@ -39,6 +39,31 @@ object DefaultScoreboardUpdater : ScoreboardUpdater
         objective
             .getScore(identifier)
             .score = line
+    }
+
+    override fun removeLine(player: Player, line: Int)
+    {
+        val scoreboard = player.retrieveScoreboard()
+        val identifier = this.getIdentifier(line)
+
+        var objective = scoreboard.getObjective("kt-board")
+
+        if (objective == null)
+        {
+            objective = scoreboard.registerNewObjective("kt-board", "dummy").apply {
+                this.displaySlot = DisplaySlot.SIDEBAR
+            }
+        }
+
+        if (objective.getScore(identifier) != null)
+        {
+            scoreboard.resetScores(identifier)
+        }
+    }
+
+    private fun getIdentifier(index: Int): String
+    {
+        return ChatColor.values()[index].toString() + ChatColor.WHITE;
     }
 
     private fun Player.retrieveScoreboard(): org.bukkit.scoreboard.Scoreboard

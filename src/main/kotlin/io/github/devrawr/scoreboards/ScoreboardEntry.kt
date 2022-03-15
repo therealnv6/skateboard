@@ -9,6 +9,14 @@ open class ScoreboardEntry(
     open val index: Int,
 )
 {
+    open fun hideIf(bool: () -> Boolean)
+    {
+        if (bool.invoke())
+        {
+            this.remove()
+        }
+    }
+
     fun display(line: String)
     {
         if (this.line != line)
@@ -17,5 +25,10 @@ open class ScoreboardEntry(
         }
 
         this.context.displayAt(this.index, this.line)
+    }
+
+    fun remove()
+    {
+        this.context.removeAt(this.index)
     }
 }

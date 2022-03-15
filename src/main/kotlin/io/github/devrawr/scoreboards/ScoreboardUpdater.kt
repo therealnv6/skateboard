@@ -12,4 +12,12 @@ interface ScoreboardUpdater
      * @param text   the text to display at the line
      */
     fun updateLine(player: Player, line: Int, text: String)
+
+    /**
+     * Remove a line at a specific index
+     *
+     * @param player the player's scoreboard to update
+     * @param line   the index of the line to remove
+     */
+    fun removeLine(player: Player, line: Int)
 }
