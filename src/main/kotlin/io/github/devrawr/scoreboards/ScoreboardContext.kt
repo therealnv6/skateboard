@@ -1,18 +1,17 @@
 package io.github.devrawr.scoreboards
 
-import io.github.devrawr.events.Events
-import io.github.devrawr.tasks.Tasks
+import io.github.devrawr.scoreboards.updating.ListenerScoreboardEntry
+import io.github.devrawr.scoreboards.updating.TickingScoreboardEntry
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
-import org.bukkit.event.player.PlayerEvent
 
 class ScoreboardContext(val player: Player)
 {
-    val lines = mutableListOf<String>()
+    val entries = mutableListOf<ScoreboardEntry>()
 
-    fun add(line: String) = this.add(lines.size, line)
-    fun add(delay: Long = 20L, line: () -> String) = this.add(lines.size, delay, line)
-    inline fun <reified T : Event> add(crossinline line: (T) -> String) = this.add(lines.size, line)
+    fun add(line: String) = this.add(entries.size, line)
+    fun add(delay: Long = 20L, line: () -> String) = this.add(entries.size, delay, line)
+    inline fun <reified T : Event> add(noinline line: (T) -> String) = this.add(entries.size, line)
 
     /**
      * Add a static line to the scoreboard
@@ -20,9 +19,14 @@ class ScoreboardContext(val player: Player)
      * @param index the index where the line will be displayed
      * @param line  the line to display at the slot
      */
-    fun add(index: Int = lines.size, line: String)
+    fun add(index: Int, line: String)
     {
-        lines.add(index, line)
+        this.displayAt(
+            index,
+            ScoreboardEntry(
+                this.player, line
+            )
+        )
     }
 
     /**
@@ -32,13 +36,14 @@ class ScoreboardContext(val player: Player)
      * @param delay the delay between the periodical updates
      * @param line  the body to invoke everytime to get the string from
      */
-    fun add(index: Int = lines.size, delay: Long = 20L, line: () -> String)
+    fun add(index: Int, delay: Long = 20L, line: () -> String)
     {
-        Tasks
-            .sync()
-            .repeating(0L, delay) {
-                this.displayAt(index, line.invoke())
-            }
+        this.displayAt(
+            index,
+            TickingScoreboardEntry(
+                this.player, line.invoke(), delay, line
+            )
+        )
     }
 
     /**
@@ -48,18 +53,42 @@ class ScoreboardContext(val player: Player)
      * @param line  the body to invoke everytime to get the string from
      */
     inline fun <reified T : Event> add(
-        index: Int = lines.size,
-        crossinline line: (T) -> String
+        index: Int,
+        noinline line: (T) -> String
     )
     {
-        Events
-            .listenTo<T>()
-            .filter {
-                (it is PlayerEvent && it.player == this.player) || it !is PlayerEvent
+        this.displayAt(
+            index,
+            ListenerScoreboardEntry(
+                this.player, "", T::class.java, line
+            )
+        )
+    }
+
+    fun displayAt(index: Int, entry: ScoreboardEntry)
+    {
+        if (this.entries.size >= index - 1)
+        {
+            for (key in this.entries.withIndex())
+            {
+                if (key.value.fixed)
+                {
+                    this.displayAt(index + 1, entry)
+                    break
+                }
+
+                if (key.index >= index)
+                {
+                    this.entries.removeAt(key.index)
+                    this.entries.add(index, key.value)
+
+                    this.displayAt(index + 1, key.value)
+                }
             }
-            .on {
-                this.displayAt(index, line.invoke(it))
-            }
+        }
+
+        this.entries.add(index, entry)
+        this.displayAt(index, entry.line)
     }
 
     /**
@@ -70,10 +99,6 @@ class ScoreboardContext(val player: Player)
      */
     fun displayAt(index: Int, line: String)
     {
-        this.lines.add(
-            index, line
-        )
-
         Scoreboards.updater.updateLine(
             this.player, index, line
         )
