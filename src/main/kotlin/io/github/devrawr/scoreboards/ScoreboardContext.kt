@@ -1,7 +1,5 @@
 package io.github.devrawr.scoreboards
 
-import io.github.devrawr.scoreboards.updating.ListenerScoreboardEntry
-import io.github.devrawr.scoreboards.updating.TickingScoreboardEntry
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 
@@ -37,14 +35,14 @@ class ScoreboardContext(val player: Player)
      * @param delay the delay between the periodical updates
      * @param line  the body to invoke everytime to get the string from
      */
-    fun add(index: Int, delay: Long = 20L, line: () -> String): TickingScoreboardEntry
+    fun add(index: Int, delay: Long = 20L, line: () -> String): ScoreboardEntry
     {
-        return TickingScoreboardEntry(
-            this.player, line.invoke(), index, delay, this, line
-        ).also {
-            this.displayAt(
-                index, it,
-            )
+        return ScoreboardEntry(
+            this.player, line.invoke(), this, index
+        ).apply {
+            this
+                .updater()
+                .updateRepeating(delay, line)
         }
     }
 
@@ -57,14 +55,14 @@ class ScoreboardContext(val player: Player)
     inline fun <reified T : Event> add(
         index: Int,
         noinline line: (T) -> String
-    ): ListenerScoreboardEntry<T>
+    ): ScoreboardEntry
     {
-        return ListenerScoreboardEntry(
-            this.player, "", index, T::class.java, this, line
-        ).also {
-            this.displayAt(
-                index, it
-            )
+        return ScoreboardEntry(
+            this.player, "", this, index
+        ).apply {
+            this
+                .updater()
+                .listenTo(line)
         }
     }
 

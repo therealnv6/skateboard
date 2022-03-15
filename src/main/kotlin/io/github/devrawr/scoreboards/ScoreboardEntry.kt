@@ -1,20 +1,20 @@
 package io.github.devrawr.scoreboards
 
+import io.github.devrawr.scoreboards.updating.LineUpdater
 import org.bukkit.entity.Player
 
-open class ScoreboardEntry(
-    open val player: Player,
-    open var line: String,
-    open val context: ScoreboardContext,
-    open val index: Int,
+class ScoreboardEntry(
+    val player: Player,
+    var line: String,
+    val context: ScoreboardContext,
+    val index: Int,
 )
 {
-    open fun hideIf(bool: () -> Boolean)
+    val updater = LineUpdater(this)
+
+    fun updater(): LineUpdater
     {
-        if (bool.invoke())
-        {
-            this.remove()
-        }
+        return this.updater
     }
 
     fun display(line: String)
