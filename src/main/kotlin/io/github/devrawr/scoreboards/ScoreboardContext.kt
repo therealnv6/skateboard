@@ -9,6 +9,7 @@ class ScoreboardContext(val player: Player)
 
     fun add(line: String) = this.add(entries.size, line)
     fun add(delay: Long = 20L, line: () -> String) = this.add(entries.size, delay, line)
+
     inline fun <reified T : Event> add(noinline line: (T) -> String) = this.add(entries.size, line)
 
     /**
@@ -40,6 +41,8 @@ class ScoreboardContext(val player: Player)
         return ScoreboardEntry(
             this.player, line.invoke(), this, index
         ).apply {
+            entries.add(index, this)
+
             this
                 .updater()
                 .updateRepeating(delay, line)
@@ -60,13 +63,15 @@ class ScoreboardContext(val player: Player)
         return ScoreboardEntry(
             this.player, "", this, index
         ).apply {
+            entries.add(index, this)
+
             this
                 .updater()
                 .listenTo(line)
         }
     }
 
-    fun displayAt(index: Int, entry: ScoreboardEntry)
+    private fun displayAt(index: Int, entry: ScoreboardEntry)
     {
         if (this.entries.size >= index - 1)
         {
