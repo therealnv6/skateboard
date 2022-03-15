@@ -5,5 +5,17 @@ import org.bukkit.entity.Player
 open class ScoreboardEntry(
     open val player: Player,
     open var line: String,
-    open val fixed: Boolean = false,
+    open val context: ScoreboardContext,
+    open val index: Int,
 )
+{
+    fun display(line: String)
+    {
+        if (this.line != line)
+        {
+            this.line = line
+        }
+
+        this.context.displayAt(this.index, this.line)
+    }
+}

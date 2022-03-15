@@ -24,7 +24,7 @@ class ScoreboardContext(val player: Player)
         this.displayAt(
             index,
             ScoreboardEntry(
-                this.player, line
+                this.player, line, this, index,
             )
         )
     }
@@ -41,7 +41,7 @@ class ScoreboardContext(val player: Player)
         this.displayAt(
             index,
             TickingScoreboardEntry(
-                this.player, line.invoke(), delay, line
+                this.player, line.invoke(), index, delay, this, line
             )
         )
     }
@@ -60,7 +60,7 @@ class ScoreboardContext(val player: Player)
         this.displayAt(
             index,
             ListenerScoreboardEntry(
-                this.player, "", T::class.java, line
+                this.player, "", index, T::class.java, this, line
             )
         )
     }
@@ -71,7 +71,7 @@ class ScoreboardContext(val player: Player)
         {
             for (key in this.entries.withIndex())
             {
-                if (key.value.fixed)
+                if (key.value.index == -1)
                 {
                     this.displayAt(index + 1, entry)
                     break
