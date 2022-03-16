@@ -11,7 +11,7 @@ class ScoreboardCreationExample
             val context = ScoreboardContext(player)
             var current = "hey"
 
-            context.title("")
+            context.title()
                 .updateRepeating(20L) {
                     if (current.length <= 12)
                     {

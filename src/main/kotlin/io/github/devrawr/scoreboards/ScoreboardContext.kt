@@ -19,11 +19,12 @@ class ScoreboardContext(val player: Player)
      * This class can be used to update the title accordingly,
      * using things such as [TitleUpdater.listenTo] or [TitleUpdater.updateRepeating]
      *
+     * @param title the default title string to begin with
      * @return a builder for ticking the title
      */
-    fun title(title: String): TitleUpdater
+    fun title(title: String = ""): TitleUpdater
     {
-        return TitleUpdater(this)
+        return TitleUpdater(this, title)
     }
 
     /**
