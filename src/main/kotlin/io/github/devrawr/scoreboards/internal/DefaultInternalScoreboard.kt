@@ -101,28 +101,21 @@ object DefaultInternalScoreboard : InternalScoreboard
 
     private fun splitText(text: String): Array<String>
     {
-        return if (text.length < 17)
-        {
-            arrayOf(text, "", "")
-        } else
-        {
-            val left = text.substring(0, 16)
+        val left = text.substring(0, 16)
 
-            val middle = text
-                .substringOrNull(16, 32)
-                ?.bringColor(left) ?: ""
+        val middle = text
+            .substringOrNull(16, 32)
+            ?.bringColor(left) ?: ""
 
-            val right = text
-                .substringOrNull(32, 48)
-                ?.bringColor(middle) ?: ""
+        val right = text
+            .substringOrNull(32, 48)
+            ?.bringColor(middle) ?: ""
 
-
-            return arrayOf(
-                left.trimColorCode(),
-                middle.trimColorCode(),
-                right
-            )
-        }
+        return arrayOf(
+            left.trimColorCode(),
+            middle.trimColorCode(),
+            right
+        )
     }
 
     private fun String.bringColor(left: String): String
