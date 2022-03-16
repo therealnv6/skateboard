@@ -1,9 +1,10 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'org.jetbrains.dokka' version '1.6.10'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'io.github.devrawr.scoreboards'
+version '0.3-SNAPSHOT'
 
 repositories {
     mavenCentral()

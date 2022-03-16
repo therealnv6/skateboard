@@ -6,11 +6,11 @@ import io.github.devrawr.tasks.Tasks
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerEvent
 
+// TODO: 3/16/22 add kdocs, kind of lazy.
 class LineUpdater(private val entry: ScoreboardEntry)
 {
-    inline fun <reified T : Event> listenTo(
-        noinline update: (T) -> String
-    ): LineUpdater = this.listenTo(T::class.java, update)
+    inline fun <reified T : Event> listenTo(noinline update: (T) -> String): LineUpdater =
+        this.listenTo(T::class.java, update)
 
     inline fun <reified T : Event> listenTo(
         noinline update: (T) -> String,
