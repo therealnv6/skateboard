@@ -29,7 +29,8 @@ object DefaultInternalScoreboard : InternalScoreboard
         }
 
         team.prefix = display[0]
-        team.suffix = display[1]
+        team.displayName = display[1]
+        team.suffix = display[2]
 
         objective
             .getScore(identifier)
@@ -102,25 +103,52 @@ object DefaultInternalScoreboard : InternalScoreboard
     {
         return if (text.length < 17)
         {
-            arrayOf(text, "")
+            arrayOf(text, "", "")
         } else
         {
             val left = text.substring(0, 16)
-            val right = text.substring(16)
 
-            if (left.endsWith("§"))
-            {
-                arrayOf(
-                    left.substring(0, left.toCharArray().size - 1),
-                    "${ChatColor.getLastColors(left)} $right"
-                )
-            } else
-            {
-                arrayOf(
-                    left,
-                    "${ChatColor.getLastColors(left)} $right"
-                )
-            }
+            val middle = text
+                .substringOrNull(16, 32)
+                ?.bringColor(left) ?: ""
+
+            val right = text
+                .substringOrNull(32, 48)
+                ?.bringColor(middle) ?: ""
+
+
+            return arrayOf(
+                left.trimColorCode(),
+                middle.trimColorCode(),
+                right
+            )
+        }
+    }
+
+    private fun String.bringColor(left: String): String
+    {
+        return "${ChatColor.getLastColors(left)}$this"
+    }
+
+    private fun String.substringOrNull(startIndex: Int, endIndex: Int): String?
+    {
+        return try
+        {
+            this.substring(startIndex, endIndex)
+        } catch (ignored: Exception)
+        {
+            return null
+        }
+    }
+
+    private fun String.trimColorCode(): String
+    {
+        return if (this.endsWith("§"))
+        {
+            this.substring(0, this.toCharArray().size - 1)
+        } else
+        {
+            this
         }
     }
 }
