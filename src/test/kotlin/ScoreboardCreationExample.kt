@@ -9,6 +9,17 @@ class ScoreboardCreationExample
     {
         Scoreboards.registerOnJoin { player ->
             val context = ScoreboardContext(player)
+            var current = "hey"
+
+            context.title("")
+                .updateRepeating(20L) {
+                    if (current.length <= 12)
+                    {
+                        current += "."
+                    }
+
+                    return@updateRepeating current
+                }
 
             context.add("${ChatColor.GRAY}${ChatColor.STRIKETHROUGH}----------------") // this will never update
 

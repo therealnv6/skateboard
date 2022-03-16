@@ -1,6 +1,6 @@
 package io.github.devrawr.scoreboards
 
-import io.github.devrawr.scoreboards.updating.LineUpdater
+import io.github.devrawr.scoreboards.updating.impl.LineUpdater
 import org.bukkit.entity.Player
 
 class ScoreboardEntry(

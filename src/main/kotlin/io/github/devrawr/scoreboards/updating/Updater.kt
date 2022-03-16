@@ -1,23 +1,27 @@
 package io.github.devrawr.scoreboards.updating
 
 import io.github.devrawr.events.Events
-import io.github.devrawr.scoreboards.ScoreboardEntry
 import io.github.devrawr.tasks.Tasks
+import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerEvent
 
-// TODO: 3/16/22 add kdocs, kind of lazy.
-class LineUpdater(private val entry: ScoreboardEntry)
+abstract class Updater
 {
-    inline fun <reified T : Event> listenTo(noinline update: (T) -> String): LineUpdater =
+    abstract val player: Player
+
+    abstract fun update(line: String)
+    abstract fun remove()
+
+    inline fun <reified T : Event> listenTo(noinline update: (T) -> String): Updater =
         this.listenTo(T::class.java, update)
 
     inline fun <reified T : Event> listenTo(
         noinline update: (T) -> String,
         noinline hideOn: (T) -> Boolean
-    ): LineUpdater = this.listenTo(T::class.java, update, hideOn)
+    ): Updater = this.listenTo(T::class.java, update, hideOn)
 
-    fun <T : Event> listenTo(type: Class<T>, update: (T) -> String): LineUpdater
+    fun <T : Event> listenTo(type: Class<T>, update: (T) -> String): Updater
     {
         return this.also {
             this.listenTo(
@@ -29,12 +33,12 @@ class LineUpdater(private val entry: ScoreboardEntry)
         }
     }
 
-    fun <T : Event> listenTo(type: Class<T>, update: (T) -> String, hideOn: (T) -> Boolean): LineUpdater
+    fun <T : Event> listenTo(type: Class<T>, update: (T) -> String, hideOn: (T) -> Boolean): Updater
     {
         return this.also {
             Events
                 .listenTo(type)
-                .filter { (it is PlayerEvent && it.player == entry.player) || it !is PlayerEvent }
+                .filter { (it is PlayerEvent && it.player == this.player) || it !is PlayerEvent }
                 .on {
                     if (hideOn.invoke(it))
                     {
@@ -49,7 +53,7 @@ class LineUpdater(private val entry: ScoreboardEntry)
         }
     }
 
-    fun updateRepeating(duration: Long, update: () -> String): LineUpdater
+    fun updateRepeating(duration: Long, update: () -> String): Updater
     {
         return this.also {
             this.updateRepeating(duration, update) {
@@ -58,7 +62,7 @@ class LineUpdater(private val entry: ScoreboardEntry)
         }
     }
 
-    fun updateRepeating(duration: Long, update: () -> String, cancelOn: () -> Boolean): LineUpdater
+    fun updateRepeating(duration: Long, update: () -> String, cancelOn: () -> Boolean): Updater
     {
         return this.also {
             Tasks
@@ -77,7 +81,7 @@ class LineUpdater(private val entry: ScoreboardEntry)
         }
     }
 
-    fun updateAfter(duration: Long, update: () -> String): LineUpdater
+    fun updateAfter(duration: Long, update: () -> String): Updater
     {
         return this.also {
             this.updateAfter(duration, update) {
@@ -86,7 +90,7 @@ class LineUpdater(private val entry: ScoreboardEntry)
         }
     }
 
-    fun updateAfter(duration: Long, update: () -> String, cancelOn: () -> Boolean): LineUpdater
+    fun updateAfter(duration: Long, update: () -> String, cancelOn: () -> Boolean): Updater
     {
         return this.also {
             Tasks
@@ -103,15 +107,5 @@ class LineUpdater(private val entry: ScoreboardEntry)
                     }
                 }
         }
-    }
-
-    fun update(line: String)
-    {
-        this.entry.display(line)
-    }
-
-    fun remove()
-    {
-        this.entry.remove()
     }
 }

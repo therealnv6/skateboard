@@ -2,6 +2,7 @@ package io.github.devrawr.scoreboards
 
 import io.github.devrawr.scoreboards.builder.impl.ListenerUpdatingBuilder
 import io.github.devrawr.scoreboards.builder.impl.TickingUpdatingBuilder
+import io.github.devrawr.scoreboards.updating.impl.TitleUpdater
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 
@@ -11,6 +12,19 @@ class ScoreboardContext(val player: Player)
 
     fun add(line: String) = this.add(entries.size, line)
     fun add(delay: Long = 20L, line: () -> String) = this.add(entries.size, delay, line)
+
+    /**
+     * Create a new [TitleUpdater] instance.
+     *
+     * This class can be used to update the title accordingly,
+     * using things such as [TitleUpdater.listenTo] or [TitleUpdater.updateRepeating]
+     *
+     * @return a builder for ticking the title
+     */
+    fun title(title: String): TitleUpdater
+    {
+        return TitleUpdater(this)
+    }
 
     /**
      * Create a new [TickingUpdatingBuilder] instance.
@@ -206,6 +220,13 @@ class ScoreboardContext(val player: Player)
 
         this.entries.add(index, entry)
         this.displayAt(index, entry.line)
+    }
+
+    fun updateTitle(player: Player, title: String)
+    {
+        Scoreboards.updater.updateTitle(
+            player, title
+        )
     }
 
     /**

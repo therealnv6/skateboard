@@ -5,6 +5,8 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.DisplaySlot
+import org.bukkit.scoreboard.Objective
+import org.bukkit.scoreboard.Scoreboard
 
 object DefaultScoreboardUpdater : ScoreboardUpdater
 {
@@ -13,18 +15,11 @@ object DefaultScoreboardUpdater : ScoreboardUpdater
     override fun updateLine(player: Player, line: Int, text: String)
     {
         val scoreboard = player.retrieveScoreboard()
+        val objective = scoreboard.retrieveObjective()
+
         val display = this.splitText(text)
-
-        var objective = scoreboard.getObjective("kt-board")
-
-        if (objective == null)
-        {
-            objective = scoreboard.registerNewObjective("kt-board", "dummy").apply {
-                this.displaySlot = DisplaySlot.SIDEBAR
-            }
-        }
-
         val identifier = this.getIdentifier(line)
+
         val team = scoreboard.getTeam(identifier)
             ?: scoreboard.registerNewTeam(identifier)
 
@@ -39,6 +34,14 @@ object DefaultScoreboardUpdater : ScoreboardUpdater
         objective
             .getScore(identifier)
             .score = line
+    }
+
+    override fun updateTitle(player: Player, title: String)
+    {
+        val scoreboard = player.retrieveScoreboard()
+        val objective = scoreboard.retrieveObjective()
+
+        objective.displayName = title
     }
 
     override fun removeLine(player: Player, line: Int)
@@ -59,6 +62,20 @@ object DefaultScoreboardUpdater : ScoreboardUpdater
         {
             scoreboard.resetScores(identifier)
         }
+    }
+
+    private fun Scoreboard.retrieveObjective(): Objective
+    {
+        var objective = this.getObjective("kt-board")
+
+        if (objective == null)
+        {
+            objective = this.registerNewObjective("kt-board", "dummy").apply {
+                this.displaySlot = DisplaySlot.SIDEBAR
+            }
+        }
+
+        return objective
     }
 
     private fun getIdentifier(index: Int): String

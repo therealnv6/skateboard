@@ -14,6 +14,14 @@ interface ScoreboardUpdater
     fun updateLine(player: Player, line: Int, text: String)
 
     /**
+     * Update the title on the scoreboard
+     *
+     * @param player the player to send the update to
+     * @param title  the string to set the title to
+     */
+    fun updateTitle(player: Player, title: String)
+
+    /**
      * Remove a line at a specific index
      *
      * @param player the player's scoreboard to update
