@@ -66,7 +66,7 @@ abstract class Updater
     {
         return this.also {
             Tasks
-                .async()
+                .sync()
                 .repeating(0L, duration) {
                     if (cancelOn.invoke())
                     {
