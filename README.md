@@ -2,6 +2,13 @@
 
 completely experimental. not suit for production
 
+# Testing Progress
+
+- [x] Basic line updating 
+- [x] Basic title updating
+- [ ] Performance (should be fine)
+- [ ] Extensive testing on line updating
+
 # What's the purpose of `scoreboards`?
 
 We focus to fix the (in my opinion) terrible way of handling scoreboards most (public) scoreboard APIs do, namely:
