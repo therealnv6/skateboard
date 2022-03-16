@@ -8,10 +8,20 @@ import org.bukkit.event.player.PlayerEvent
 
 class LineUpdater(val entry: ScoreboardEntry)
 {
-    inline fun <reified T : Event> listenTo(crossinline update: (T) -> String): LineUpdater
+    inline fun <reified T : Event> listenTo(
+        noinline update: (T) -> String
+    ): LineUpdater = this.listenTo(T::class.java, update)
+
+    inline fun <reified T : Event> listenTo(
+        noinline update: (T) -> String,
+        noinline hideOn: (T) -> Boolean
+    ): LineUpdater = this.listenTo(T::class.java, update, hideOn)
+
+    fun <T : Event> listenTo(type: Class<T>, update: (T) -> String): LineUpdater
     {
         return this.also {
             this.listenTo(
+                type,
                 update
             ) {
                 false
@@ -19,14 +29,14 @@ class LineUpdater(val entry: ScoreboardEntry)
         }
     }
 
-    inline fun <reified T : Event> listenTo(crossinline update: (T) -> String, crossinline cancelOn: (T) -> Boolean): LineUpdater
+    fun <T : Event> listenTo(type: Class<T>, update: (T) -> String, hideOn: (T) -> Boolean): LineUpdater
     {
         return this.also {
             Events
-                .listenTo<T>()
+                .listenTo(type)
                 .filter { (it is PlayerEvent && it.player == entry.player) || it !is PlayerEvent }
                 .on {
-                    if (cancelOn.invoke(it))
+                    if (hideOn.invoke(it))
                     {
                         this.remove()
                     } else

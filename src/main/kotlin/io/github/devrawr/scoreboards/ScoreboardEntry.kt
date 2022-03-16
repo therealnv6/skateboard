@@ -5,12 +5,13 @@ import org.bukkit.entity.Player
 
 class ScoreboardEntry(
     val player: Player,
-    var line: String,
-    val context: ScoreboardContext,
-    val index: Int,
+
+    internal var line: String,
+    private val context: ScoreboardContext,
+    internal val index: Int,
 )
 {
-    val updater = LineUpdater(this)
+    private val updater = LineUpdater(this)
 
     fun updater(): LineUpdater
     {
