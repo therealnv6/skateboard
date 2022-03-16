@@ -10,7 +10,7 @@ class TickingUpdatingBuilder(
     entry: ScoreboardEntry
 ) : UpdatingBuilder<TickHandle, TickHideHandle>(entry)
 {
-    var cooldown = 20L
+    internal var cooldown = 20L
 
     fun cooldown(duration: Long): TickingUpdatingBuilder
     {

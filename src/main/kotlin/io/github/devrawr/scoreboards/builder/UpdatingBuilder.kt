@@ -6,8 +6,8 @@ abstract class UpdatingBuilder<K : Any, V : Any>(
     internal val entry: ScoreboardEntry
 )
 {
-    var handle: K? = null
-    var hide: V? = null
+    internal var handle: K? = null
+    internal var hide: V? = null
 
     fun handle(action: K): UpdatingBuilder<K, V>
     {

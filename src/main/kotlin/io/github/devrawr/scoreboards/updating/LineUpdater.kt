@@ -6,7 +6,7 @@ import io.github.devrawr.tasks.Tasks
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerEvent
 
-class LineUpdater(val entry: ScoreboardEntry)
+class LineUpdater(private val entry: ScoreboardEntry)
 {
     inline fun <reified T : Event> listenTo(
         noinline update: (T) -> String
