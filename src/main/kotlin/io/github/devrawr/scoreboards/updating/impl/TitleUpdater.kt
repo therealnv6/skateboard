@@ -12,7 +12,5 @@ class TitleUpdater(private val context: ScoreboardContext) : Updater()
         this.context.updateTitle(player, line)
     }
 
-    override fun remove()
-    {
-    }
+    override fun remove() {}
 }

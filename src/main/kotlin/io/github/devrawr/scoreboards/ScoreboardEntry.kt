@@ -13,11 +13,28 @@ class ScoreboardEntry(
 {
     private val updater = LineUpdater(this)
 
+    /**
+     * Retrieve the current [LineUpdater] instance.
+     *
+     * This instance is created upon
+     * class initialization.
+     *
+     * @return [updater]
+     */
     fun updater(): LineUpdater
     {
         return this.updater
     }
 
+    /**
+     * Display a line on the context's scoreboard.
+     *
+     * This will automatically update the
+     * cached [ScoreboardEntry.line] line
+     * if the lines are not identical.
+     *
+     * @param line the line to update the current displayed line with
+     */
     fun display(line: String)
     {
         if (this.line != line)
@@ -28,6 +45,9 @@ class ScoreboardEntry(
         this.context.displayAt(this.index, this.line)
     }
 
+    /**
+     * Completely remove the line from the scoreboard.
+     */
     fun remove()
     {
         this.context.removeAt(this.index)

@@ -1,14 +1,23 @@
 # scoreboards
+
 completely experimental. not suit for production
 
 # What's the purpose of `scoreboards`?
-We focus to fix the (in my opinion) terrible way of handling scoreboards most (public) scoreboard APIs do, namely:
-most scoreboard APIs tend to update the __entire__ scoreboard every X ticks, even if the line is static and will practically never change.
 
-Well, how do we fix this? The way we aim to fix this is to give the option to individually update the entries, through for example, listeners and/or only updating 
-a specific entry every X ticks (keyword - specific, not the entire board).
+We focus to fix the (in my opinion) terrible way of handling scoreboards most (public) scoreboard APIs do, namely:
+most scoreboard APIs tend to update the __entire__ scoreboard every X ticks, even if the line is static and will
+practically never change.
+
+Well, how do we fix this? The way we aim to fix this is to give the option to individually update the entries, through
+for example, listeners and/or only updating a specific entry every X ticks (keyword - specific, not the entire board).
+
+# Support
+
+We currently only support bukkit-based platforms, such as spigot, paperspigot, or other forked platforms. It shouldn't
+be hard to port this to another platform if you wish to do so.
 
 # Examples
+
 ```kt
         Scoreboards
             .registerOnJoin { player ->

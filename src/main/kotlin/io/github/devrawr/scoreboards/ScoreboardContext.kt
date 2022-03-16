@@ -196,6 +196,16 @@ class ScoreboardContext(val player: Player)
         }
     }
 
+    /**
+     * Display a [ScoreboardEntry] at a certain index
+     * of the scoreboard.
+     *
+     * This method will automatically move every entry
+     * at the same [index] of the current entry up by `1`.
+     *
+     * @param index the index where to put the entry at
+     * @param entry the entry to display on the scoreboard
+     */
     private fun displayAt(index: Int, entry: ScoreboardEntry)
     {
         if (this.entries.size >= index - 1)
@@ -224,9 +234,11 @@ class ScoreboardContext(val player: Player)
 
     fun updateTitle(player: Player, title: String)
     {
-        Scoreboards.updater.updateTitle(
-            player, title
-        )
+        Scoreboards
+            .internal
+            .updateTitle(
+                player, title
+            )
     }
 
     /**
@@ -237,15 +249,19 @@ class ScoreboardContext(val player: Player)
      */
     fun displayAt(index: Int, line: String)
     {
-        Scoreboards.updater.updateLine(
-            this.player, index, line
-        )
+        Scoreboards
+            .internal
+            .updateLine(
+                this.player, index, line
+            )
     }
 
     fun removeAt(index: Int)
     {
-        Scoreboards.updater.removeLine(
-            this.player, index
-        )
+        Scoreboards
+            .internal
+            .removeLine(
+                this.player, index
+            )
     }
 }

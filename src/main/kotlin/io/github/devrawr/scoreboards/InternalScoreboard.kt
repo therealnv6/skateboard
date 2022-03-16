@@ -2,7 +2,7 @@ package io.github.devrawr.scoreboards
 
 import org.bukkit.entity.Player
 
-interface ScoreboardUpdater
+interface InternalScoreboard
 {
     /**
      * Update a specific line on the scoreboard

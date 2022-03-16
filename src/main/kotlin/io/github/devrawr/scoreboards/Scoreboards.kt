@@ -1,13 +1,13 @@
 package io.github.devrawr.scoreboards
 
 import io.github.devrawr.events.Events
-import io.github.devrawr.scoreboards.impl.DefaultScoreboardUpdater
+import io.github.devrawr.scoreboards.internal.DefaultInternalScoreboard
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 
 object Scoreboards
 {
-    var updater: ScoreboardUpdater = DefaultScoreboardUpdater
+    var internal: InternalScoreboard = DefaultInternalScoreboard
 
     /**
      * Register a scoreboard to automatically be applied
