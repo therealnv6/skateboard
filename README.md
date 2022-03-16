@@ -14,6 +14,28 @@ a specific entry every X ticks (keyword - specific, not the entire board).
             .registerOnJoin { player ->
                 val context = ScoreboardContext(player)
 
+                var reversing = false
+                var current = "hey"
+
+                context.title("")
+                    .updateRepeating(10L) {
+                        if (current.length <= 12 && !reversing)
+                        {
+                            current += "."
+                        } else
+                        {
+                            reversing = true
+                            current = current.substring(0..(current.length - 2))
+
+                            if (current == "hey")
+                            {
+                                reversing = false
+                            }
+                        }
+
+                        return@updateRepeating current
+                    }
+                    
                 context.add("${ChatColor.GRAY}${ChatColor.STRIKETHROUGH}----------------") // this line is static, and it will never update.
 
                 context.add<PlayerMoveEvent> { // this line will update everytime the player itself moves. 
