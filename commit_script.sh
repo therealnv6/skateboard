@@ -11,7 +11,7 @@ if [[ -n "$commit_message" ]]; then
       rm -rf ./dokka/
     fi
 
-    mv ./build/dokka/ ./dokka/
+    mv ./build/dokka/ ./
 
     # commit to git
     git add .
