@@ -15,4 +15,3 @@ gradle-app.setting
 gradle.properties
 .gradletasknamecache
 !lib/*.jar
-./commit_script.sh
