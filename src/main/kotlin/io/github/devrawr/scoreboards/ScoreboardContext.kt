@@ -1,6 +1,7 @@
 package io.github.devrawr.scoreboards
 
 import io.github.devrawr.scoreboards.builder.impl.ListenerUpdatingBuilder
+import io.github.devrawr.scoreboards.builder.impl.TickingUpdatingBuilder
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 
@@ -12,12 +13,50 @@ class ScoreboardContext(val player: Player)
     fun add(delay: Long = 20L, line: () -> String) = this.add(entries.size, delay, line)
 
     /**
+     * Create a new [TickingUpdatingBuilder] instance.
+     *
+     * Calls [ScoreboardContext.repeating], using the
+     * [entries] field size as index
+     *
+     * @return a builder for ticking updates, new object.
+     */
+    fun repeating(): TickingUpdatingBuilder = this.repeating(entries.size)
+
+    /**
+     * Create a new [TickingUpdatingBuilder] instance.
+     *
+     * Generally used for easier generation of
+     * tick-based updating entries, but in a
+     * much (subjectively) easier and cleaner way to
+     * invoke the methods.
+     *
+     * [TickingUpdatingBuilder] is used for entries
+     * which should update periodically after a certain
+     * amount of time, which should be specified using
+     * the provided [TickingUpdatingBuilder.cooldown] method.
+     *
+     * @param index the index where the line will be displayed
+     * @return a builder for ticking updates, new object.
+     */
+    fun repeating(index: Int): TickingUpdatingBuilder
+    {
+        val entry = ScoreboardEntry(
+            this.player, "", this, index
+        )
+
+        return TickingUpdatingBuilder(entry).also {
+            this.entries.add(entry)
+        }
+    }
+
+    /**
      * Create a new [ListenerUpdatingBuilder] instance.
      *
      * Calls [ScoreboardContext.listen], using the
      * [entries] field size as index
      *
      * @param type the type of the event to listen to
+     * @return a builder for listener updates, new object.
      */
     fun <T : Event> listen(type: Class<T>) = this.listen(entries.size, type)
 
@@ -28,6 +67,7 @@ class ScoreboardContext(val player: Player)
      * the [entries] field to find the index.
      *
      * @param line  the body to invoke everytime to get the string from
+     * @return a new entry instance
      */
     inline fun <reified T : Event> add(noinline line: (T) -> String) = this.add(entries.size, line)
 
