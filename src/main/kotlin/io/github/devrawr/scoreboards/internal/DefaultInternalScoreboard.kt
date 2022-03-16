@@ -101,7 +101,7 @@ object DefaultInternalScoreboard : InternalScoreboard
 
     private fun splitText(text: String): Array<String>
     {
-        val left = text.substring(0, 16)
+        val left = text.substringOrNull(0, 16) ?: ""
 
         val middle = text
             .substringOrNull(16, 32)
