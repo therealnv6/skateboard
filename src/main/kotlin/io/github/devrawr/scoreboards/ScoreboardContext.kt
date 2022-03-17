@@ -166,11 +166,13 @@ class ScoreboardContext(val player: Player)
         return ScoreboardEntry(
             this.player, line.invoke(), this, index
         ).apply {
-            entries.add(index, this)
-
-            this
-                .updater()
-                .updateRepeating(delay, line)
+            entries.add(
+                index, this.also {
+                    this
+                        .updater()
+                        .updateRepeating(delay, line)
+                }
+            )
         }
     }
 
@@ -189,11 +191,13 @@ class ScoreboardContext(val player: Player)
         return ScoreboardEntry(
             this.player, "", this, index
         ).apply {
-            entries.add(index, this)
-
-            this
-                .updater()
-                .listenTo(line)
+            entries.add(
+                index, this.also {
+                    this
+                        .updater()
+                        .listenTo(line)
+                }
+            )
         }
     }
 
