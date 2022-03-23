@@ -29,8 +29,7 @@ object DefaultInternalScoreboard : InternalScoreboard
         }
 
         team.prefix = display[0]
-        team.displayName = display[1]
-        team.suffix = display[2]
+        team.suffix = display[1]
 
         objective
             .getScore(identifier)
@@ -102,18 +101,12 @@ object DefaultInternalScoreboard : InternalScoreboard
     private fun splitText(text: String): Array<String>
     {
         val left = text.substringOrNull(0, 16) ?: ""
-
-        val middle = text
+        val right = text
             .substringOrNull(16, 32)
             ?.bringColor(left) ?: ""
 
-        val right = text
-            .substringOrNull(32, 48)
-            ?.bringColor(middle) ?: ""
-
         return arrayOf(
             left.trimColorCode(),
-            middle.trimColorCode(),
             right
         )
     }
