@@ -120,14 +120,7 @@ object DefaultInternalScoreboard : InternalScoreboard
     {
         return try
         {
-            var index = endIndex
-
-            if (this.length < index)
-            {
-                index = this.length - 1
-            }
-
-            this.substring(startIndex, index)
+            this.substring(startIndex, endIndex.coerceAtMost(this.length))
         } catch (ignored: Exception)
         {
             return null
