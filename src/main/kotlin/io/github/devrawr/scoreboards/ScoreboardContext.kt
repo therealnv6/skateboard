@@ -24,7 +24,9 @@ class ScoreboardContext(val player: Player)
      */
     fun title(title: String = ""): TitleUpdater
     {
-        return TitleUpdater(this, title)
+        return TitleUpdater(this, title).also {
+            this.updateTitle(this.player, title)
+        }
     }
 
     /**

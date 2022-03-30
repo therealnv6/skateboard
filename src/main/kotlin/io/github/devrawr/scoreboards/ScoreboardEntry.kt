@@ -13,6 +13,11 @@ class ScoreboardEntry(
 {
     private val updater = LineUpdater(this)
 
+    init
+    {
+        this.display(line)
+    }
+
     /**
      * Retrieve the current [LineUpdater] instance.
      *
