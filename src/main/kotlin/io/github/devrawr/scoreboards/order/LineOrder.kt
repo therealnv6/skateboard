@@ -2,15 +2,14 @@ package io.github.devrawr.scoreboards.order
 
 enum class LineOrder
 {
-    Decrement,
-    Increment;
-
-    fun getRelativePosition(index: Int): Int
+    Decrement
     {
-        return when (this)
-        {
-            Decrement -> 16 - index
-            Increment -> index
-        }
-    }
+        override fun getRelativePosition(index: Int) = 16 - index
+    },
+    Increment
+    {
+        override fun getRelativePosition(index: Int) = index
+    };
+
+    abstract fun getRelativePosition(index: Int): Int
 }
