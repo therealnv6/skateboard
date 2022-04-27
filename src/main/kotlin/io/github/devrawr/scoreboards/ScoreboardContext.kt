@@ -2,6 +2,7 @@ package io.github.devrawr.scoreboards
 
 import io.github.devrawr.scoreboards.builder.impl.ListenerUpdatingBuilder
 import io.github.devrawr.scoreboards.builder.impl.TickingUpdatingBuilder
+import io.github.devrawr.scoreboards.order.LineOrder
 import io.github.devrawr.scoreboards.updating.impl.TitleUpdater
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -9,6 +10,7 @@ import org.bukkit.event.Event
 class ScoreboardContext(val player: Player)
 {
     val entries = mutableListOf<ScoreboardEntry>()
+    var lineOrder = LineOrder.Decrement
 
     fun add(line: String) = this.add(entries.size, line)
     fun add(delay: Long = 20L, line: () -> String) = this.add(entries.size, delay, line)
@@ -127,12 +129,13 @@ class ScoreboardContext(val player: Player)
     fun <T : Event> listen(index: Int, type: Class<T>): ListenerUpdatingBuilder<T>
     {
         val entry = ScoreboardEntry(
-            this.player, "", this, index
+            context = this,
+            player = this.player,
+            index = this.lineOrder.getRelativePosition(index),
+            line = ""
         )
 
-        return ListenerUpdatingBuilder(
-            type, entry
-        ).also {
+        return ListenerUpdatingBuilder(type, entry).also {
             entries.add(index, entry)
         }
     }
@@ -147,7 +150,10 @@ class ScoreboardContext(val player: Player)
     fun add(index: Int, line: String): ScoreboardEntry
     {
         return ScoreboardEntry(
-            this.player, line, this, index,
+            context = this,
+            player = this.player,
+            index = this.lineOrder.getRelativePosition(index),
+            line = line
         ).also {
             this.displayAt(
                 index, it
@@ -166,7 +172,10 @@ class ScoreboardContext(val player: Player)
     fun add(index: Int, delay: Long = 20L, line: () -> String): ScoreboardEntry
     {
         return ScoreboardEntry(
-            this.player, line.invoke(), this, index
+            context = this,
+            player = this.player,
+            index = this.lineOrder.getRelativePosition(index),
+            line = line.invoke(),
         ).apply {
             entries.add(
                 index, this.also {
@@ -191,7 +200,10 @@ class ScoreboardContext(val player: Player)
     ): ScoreboardEntry
     {
         return ScoreboardEntry(
-            this.player, "", this, index
+            context = this,
+            player = this.player,
+            index = this.lineOrder.getRelativePosition(index),
+            line = ""
         ).apply {
             entries.add(
                 index, this.also {
@@ -254,7 +266,10 @@ class ScoreboardContext(val player: Player)
      * @param index the index to display the line at
      * @param line  the text to display at the index
      */
-    fun displayAt(index: Int, line: String)
+    fun displayAt(
+        index: Int,
+        line: String
+    )
     {
         Scoreboards
             .internal
